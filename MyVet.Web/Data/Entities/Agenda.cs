@@ -29,5 +29,7 @@ namespace MyVet.Web.Data.Entities
         [Display(Name = "Is Available?")]
         public bool IsAvailable { get; set; }
 
+
+
     }
 }

@@ -29,5 +29,9 @@ namespace MyVet.Web.Data.Entities
 
         public string Remarks { get; set; }
 
+        public Pet Pet { get; set; }
+
+      
+
     }
 }

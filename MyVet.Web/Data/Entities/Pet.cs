@@ -39,6 +39,8 @@ namespace MyVet.Web.Data.Entities
 
         public ICollection<History> Histories { get; set; }
 
+        public ICollection<Agenda> Agendas { get; set; }
+
         //TODO: replace the correct URL for the image
         public string ImageFullPath => string.IsNullOrEmpty(ImageUrl)
             ? null

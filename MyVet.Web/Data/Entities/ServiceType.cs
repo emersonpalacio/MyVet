@@ -15,5 +15,7 @@ namespace MyVet.Web.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string Name { get; set; }
 
+        public ICollection<ServiceType> ServiceTypes { get; set; }
+
     }
 }
