@@ -16,7 +16,7 @@ using MyVet.Web.Models;
 
 namespace MyVet.Web.Controllers
 {
-    [Authorize (Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class OwnersController : Controller
     {
         private readonly DataContext _context;
@@ -28,7 +28,7 @@ namespace MyVet.Web.Controllers
         public OwnersController(DataContext context,
                                 IUserHelper userHelper,
                                 ICombosHelper combosHelper,
-                                IConverterHelper converterHelper ,
+                                IConverterHelper converterHelper,
                                 IImageHelper imageHelper)
         {
             _context = context;
@@ -43,7 +43,7 @@ namespace MyVet.Web.Controllers
         {
             return View(_context.Owners
                         .Include(o => o.User)
-                        .Include(o =>o.Pets));
+                        .Include(o => o.Pets));
         }
 
 
@@ -145,7 +145,7 @@ namespace MyVet.Web.Controllers
         }
 
         // POST: Owners/Edit/5
-  
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id")] Owner owner)
@@ -236,7 +236,7 @@ namespace MyVet.Web.Controllers
 
             return View(model);
         }
-          
+
         [HttpPost]
         public async Task<IActionResult> AddPet(PetViewModel model)
         {
@@ -246,9 +246,9 @@ namespace MyVet.Web.Controllers
                 if (model.ImageFile != null)
                 {
                     //todo error
-                    path = await _imageHelper.UploadImageAsync(model.ImageFile);                   
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile);
                 }
-                var pet = await _converterHelper.ToPetAsync(model, path, true);              
+                var pet = await _converterHelper.ToPetAsync(model, path, true);
 
                 _context.Add(pet);
                 await _context.SaveChangesAsync();
@@ -260,7 +260,7 @@ namespace MyVet.Web.Controllers
             return View(model);
         }
 
-         
+
         [HttpGet]
         public async Task<IActionResult> EditPet(int? id)
         {
@@ -288,7 +288,7 @@ namespace MyVet.Web.Controllers
                 var path = model.ImageUrl;
                 if (model.ImageFile != null)
                 {
-                     path = await _imageHelper.UploadImageAsync(model.ImageFile);
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile);
                 }
 
                 var pet = await _converterHelper.ToPetAsync(model, path, false);
@@ -297,7 +297,7 @@ namespace MyVet.Web.Controllers
                 return RedirectToAction($"Details/{model.OwnerId}");
             }
             model.PetTypes = _combosHelper.GetComboPetTypes();
-            return View( model);
+            return View(model);
         }
 
 
@@ -320,8 +320,78 @@ namespace MyVet.Web.Controllers
 
             return View(pet);
         }
+    
 
 
+
+
+
+
+
+
+        public async Task<IActionResult> AddHistory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pet = await _context.Pets.FindAsync(id.Value);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            var model = new HistoryViewModel
+            {
+                Date = DateTime.Now,
+                PetId = pet.Id,
+                ServiceTypes = GetComboServiceTypes(),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddHistory(HistoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var history = new History
+                {
+                    Date = model.Date,
+                    Description = model.Description,
+                    Pet = await _context.Pets.FindAsync(model.PetId),
+                    Remarks = model.Remarks,
+                    ServiceType = await _context.ServiceTypes.FindAsync(model.ServiceTypeId)
+                };
+
+                _context.Histories.Add(history);
+                await _context.SaveChangesAsync();
+                return RedirectToAction($"{nameof(DetailsPet)}/{model.PetId}");
+            }
+            model.ServiceTypes = _combosHelper.GetComboServicePetTypes();
+            return View(model);
+        }
+
+
+
+        private IEnumerable<SelectListItem> GetComboServiceTypes()
+        {
+            var list = _context.ServiceTypes.Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value = p.Id.ToString()
+            }).OrderBy(p => p.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a service type...)",
+                Value = "0"
+            });
+
+            return list;
+        }
 
 
 
