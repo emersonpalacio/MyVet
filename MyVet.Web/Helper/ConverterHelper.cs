@@ -8,10 +8,13 @@ namespace MyVet.Web.Helper
     public class ConverterHelper : IConverterHelper
     {
         private readonly DataContext _dataContext;
+        private readonly ICombosHelper _combosHelper;
 
-        public ConverterHelper(DataContext dataContext)
+        public ConverterHelper(DataContext dataContext,
+                                ICombosHelper combosHelper)
         {
             _dataContext = dataContext;
+            _combosHelper = combosHelper;
         }
         public async Task<Pet> ToPetAsync(PetViewModel model, string path, bool isNew)
         {
@@ -27,9 +30,31 @@ namespace MyVet.Web.Helper
                 PetType = await _dataContext.PetTypes.FindAsync(model.PetTypeId),
                 Race = model.Race,
                 Remarks = model.Remarks
-            };        
-
+            };
             return pet;
         }
+
+
+        public PetViewModel ToPetViewModelAsync(Pet pet)
+        {
+            return new PetViewModel
+            {
+                Agendas = pet.Agendas,
+                Born = pet.Born,
+                Histories = pet.Histories,
+                Id = pet.Id,
+                ImageUrl = pet.ImageUrl,
+                Name = pet.Name,
+                Owner = pet.Owner,
+                PetType = pet.PetType,
+                Race = pet.Race,
+                Remarks = pet.Remarks,
+                OwnerId = pet.Owner.Id,
+                PetTypeId = pet.PetType.Id,
+                PetTypes = _combosHelper.GetComboPetTypes(),
+            };
+            
+        }
+
     }
 }
