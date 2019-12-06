@@ -394,6 +394,40 @@ namespace MyVet.Web.Controllers
         }
 
 
+        public async Task<IActionResult> EditHistory(int? id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var history = await _context.Histories
+                        .Include(h => h.Pet)
+                        .Include(h => h.ServiceType)
+                        .FirstOrDefaultAsync(p => p.Id == id.Value);
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            return View(_converterHelper.ToHistoryViewAsync(history));
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> EditHistory(HistoryViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var history = await _converterHelper.ToHistoryAsync(model, false);
+                _context.Histories.Update(history);
+                await _context.SaveChangesAsync();
+                return RedirectToAction($"{nameof(DetailsPet)}/{model.PetId }");
+            }
+            model.ServiceTypes = _combosHelper.GetComboServicePetTypes();
+            return View (model);
+        }
+
 
     }
 }
