@@ -50,8 +50,7 @@ namespace MyVet.Web.Controllers
         }
 
         // POST: PetTypes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] PetType petType)
@@ -120,30 +119,30 @@ namespace MyVet.Web.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
+            {  
                 return NotFound();
             }
 
             var petType = await _context.PetTypes
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(pt => pt.Pets)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (petType == null)
             {
                 return NotFound();
             }
 
-            return View(petType);
-        }
+            if (petType.Pets.Count > 0)
+            {
+                ModelState.AddModelError(string.Empty,"Tiene registro relacionados, no se peude borrado.");
+                return RedirectToAction(nameof(Index));
+            }
 
-        // POST: PetTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var petType = await _context.PetTypes.FindAsync(id);
             _context.PetTypes.Remove(petType);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+       
 
         private bool PetTypeExists(int id)
         {

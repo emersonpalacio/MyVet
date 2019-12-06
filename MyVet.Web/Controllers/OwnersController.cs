@@ -187,25 +187,25 @@ namespace MyVet.Web.Controllers
             }
 
             var owner = await _context.Owners
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(o => o.Pets)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == id);
             if (owner == null)
             {
                 return NotFound();
             }
-
-            return View(owner);
-        }
-
-        // POST: Owners/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var owner = await _context.Owners.FindAsync(id);
+            if (owner.Pets.Count > 0)
+            {
+                ModelState.AddModelError(string.Empty, "Tiene registro relacionados, no se peude borrado.");
+                return RedirectToAction(nameof(Index));
+            }
+            await _userHelper.DeleteUserAsync(owner.User.Email);
             _context.Owners.Remove(owner);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+    
 
         private bool OwnerExists(int id)
         {
@@ -245,7 +245,7 @@ namespace MyVet.Web.Controllers
                 var path = string.Empty;
                 if (model.ImageFile != null)
                 {
-                    //todo error
+                 
                     path = await _imageHelper.UploadImageAsync(model.ImageFile);
                 }
                 var pet = await _converterHelper.ToPetAsync(model, path, true);
@@ -427,6 +427,54 @@ namespace MyVet.Web.Controllers
             model.ServiceTypes = _combosHelper.GetComboServicePetTypes();
             return View (model);
         }
+
+        public async Task<IActionResult> DeleteHistory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var history = await _context.Histories
+                .Include(h => h.Pet)
+                .FirstOrDefaultAsync(h => h.Id == id.Value);
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            _context.Histories.Remove(history);
+            await _context.SaveChangesAsync();
+            return RedirectToAction($"{nameof(DetailsPet)}/{history.Pet.Id}");
+        }
+
+
+        public async Task<IActionResult> DeletePet(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pet = await _context.Pets
+                .Include(p => p.Owner)
+                .Include(p =>p.Histories )
+                .FirstOrDefaultAsync(p => p.Id == id.Value);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            if (pet.Histories.Count > 0)
+            {
+                ModelState.AddModelError(string.Empty,"posee registros relacionados.");
+                return RedirectToAction($"{nameof(Details)}/{pet.Owner.Id}");
+            }
+
+            _context.Pets.Remove(pet);
+            await _context.SaveChangesAsync();
+            return RedirectToAction($"{nameof(Details)}/{pet.Owner.Id}");
+        }
+
 
 
     }
