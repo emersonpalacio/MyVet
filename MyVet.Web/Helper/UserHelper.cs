@@ -85,5 +85,12 @@ namespace MyVet.Web.Helper
         }
 
 
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
+
+
+
     }
 }

@@ -125,7 +125,7 @@ namespace MyVet.Web.Controllers
 
             var petType = await _context.PetTypes
                 .Include(pt => pt.Pets)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(pt => pt.Id == id);
             if (petType == null)
             {
                 return NotFound();
