@@ -17,6 +17,7 @@ using MyVet.Web.Models;
 namespace MyVet.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
+    
     public class OwnersController : Controller
     {
         private readonly DataContext _context;
