@@ -40,7 +40,7 @@ namespace MyVet.Web.Controllers
         }
 
         // GET: Owners
-        public IActionResult Index()
+        public  IActionResult Index()
         {
             return View(_context.Owners
                         .Include(o => o.User)
@@ -85,16 +85,18 @@ namespace MyVet.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await AddUser(model);
+                var user = await AddUser(model);//se crea el usuaaio.
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "This email is already used.");
                     return View(model);
                 }
+                var UserInDb = await _userHelper.GetUserByEmailAsync(model.Username);
                 var owner = new Owner
                 {
+                    Agendas = new List<Agenda>(),
                     Pets = new List<Pet>(),
-                    User = user,
+                    User = UserInDb,
                 };
                 _context.Owners.Add(owner);
                 await _context.SaveChangesAsync();
@@ -113,24 +115,24 @@ namespace MyVet.Web.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
-                UserName = model.Username
+                UserName = model.Username,
+
             };
 
-            var result = await _userHelper.AddUserAsync(user, model.Password);
-            if (result != IdentityResult.Success)
+            var response = await _userHelper.AddUserAsync(user, model.Password);
+            if (response != IdentityResult.Success)
             {
                 return null;
             }
 
-            var newUser = await _userHelper.GetUserByEmailAsync(model.Username);
-            await _userHelper.AddUserToRoleAsync(newUser, "Customer");
-            return newUser;
+            var userInDb = await _userHelper.GetUserByEmailAsync(model.Username);
+            await _userHelper.AddUserToRoleAsync(userInDb, "Customer");
+            return userInDb;
         }
 
 
 
         // GET: Owners/Edit/5
-
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -184,7 +186,7 @@ namespace MyVet.Web.Controllers
 
 
         // GET: Owners/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteOwner(int? id)
         {
             if (id == null)
             {
@@ -199,6 +201,7 @@ namespace MyVet.Web.Controllers
             {
                 return NotFound();
             }
+
             if (owner.Pets.Count > 0)
             {
                 ModelState.AddModelError(string.Empty, "Tiene registro relacionados, no se peude borrado.");
@@ -219,7 +222,7 @@ namespace MyVet.Web.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> AddPet(int? id)
+        public async Task<IActionResult>  AddPet(int? id)
         {
             if (id == null)
             {
@@ -235,8 +238,9 @@ namespace MyVet.Web.Controllers
             var model = new PetViewModel
             {
                 Born = DateTime.Today,
-                OwnerId = owner.Id,
+                OwnerId = owner.Id,//quien la esta creando
                 PetTypes = _combosHelper.GetComboPetTypes(),
+                
             };
 
             return View(model);
@@ -247,13 +251,12 @@ namespace MyVet.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                var route = string.Empty;
                 if (model.ImageFile != null)
-                {
-                 
-                    path = await _imageHelper.UploadImageAsync(model.ImageFile);
+                {                 
+                    route = await _imageHelper.UploadImageAsync(model.ImageFile);
                 }
-                var pet = await _converterHelper.ToPetAsync(model, path, true);
+                var pet = await _converterHelper.ToPetAsync(model, route, true);
 
                 _context.Add(pet);
                 await _context.SaveChangesAsync();
@@ -261,9 +264,9 @@ namespace MyVet.Web.Controllers
             }
 
             //Se le tiene que mandar el origen de los combos
-            model.PetTypes = _combosHelper.GetComboPetTypes();
+        
             return View(model);
-        }
+        }  
 
 
         [HttpGet]
@@ -290,13 +293,13 @@ namespace MyVet.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = model.ImageUrl;
+                var Route = model.ImageUrl;
                 if (model.ImageFile != null)
                 {
-                    path = await _imageHelper.UploadImageAsync(model.ImageFile);
+                    Route = await _imageHelper.UploadImageAsync(model.ImageFile);
                 }
 
-                var pet = await _converterHelper.ToPetAsync(model, path, false);
+                var pet = await _converterHelper.ToPetAsync(model, Route, false);
                 _context.Pets.Update(pet);
                 await _context.SaveChangesAsync();
                 return RedirectToAction($"Details/{model.OwnerId}");
@@ -306,7 +309,7 @@ namespace MyVet.Web.Controllers
         }
 
 
-        public async Task<IActionResult> DetailsPet(int? id)
+        public async Task<IActionResult>DetailsPet(int? id)
         {
             if (id == null)
             {
@@ -324,16 +327,9 @@ namespace MyVet.Web.Controllers
             }
 
             return View(pet);
-        }
-    
+        }    
 
-
-
-
-
-
-
-
+                                 
         public async Task<IActionResult> AddHistory(int? id)
         {
             if (id == null)
@@ -471,7 +467,7 @@ namespace MyVet.Web.Controllers
             }
             if (pet.Histories.Count > 0)
             {
-                ModelState.AddModelError(string.Empty,"posee registros relacionados.");
+                ModelState.AddModelError(string.Empty,"the pet, contain relation DB");
                 return RedirectToAction($"{nameof(Details)}/{pet.Owner.Id}");
             }
 

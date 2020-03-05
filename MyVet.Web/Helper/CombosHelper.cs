@@ -14,6 +14,7 @@ namespace MyVet.Web.Helper
         {
             _dataContext = dataContext;
         }
+
         public IEnumerable<SelectListItem> GetComboPetTypes()
         {
             var list = _dataContext.PetTypes.Select(pt => new SelectListItem
@@ -36,14 +37,16 @@ namespace MyVet.Web.Helper
             {
                 var list = _dataContext.ServiceTypes.Select(pt => new SelectListItem
                 {
-                    Text = pt.Name,
-                    Value = $"{pt.Id }"
+                  Text = pt.Name,
+                  Value=$"{pt.Id}"                    
+                    
                 })
                     .OrderBy(pt => pt.Text)
                     .ToList();
+
                 list.Insert(0, new SelectListItem
                 {
-                    Text = "[Select a pet Type...]",
+                    Text = "[Select a service Type...]",
                     Value = "0"
                 });
 

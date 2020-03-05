@@ -57,7 +57,7 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a> |
-    <a asp-action="AddPet" asp-route-id="@Model.Id" class="btn btn-primary">Add Pet</a>
+    <a asp-action="AddPet" asp-route-id="@Model.Id" class="btn btn-primary">Add Pet</a> |
     <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>
 @if (Model.Pets.Count == 0)
@@ -142,17 +142,17 @@ else
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript">
-    	$(document).ready(function () {
-        	// Delete item
-        	var item_to_delete;
+        $(document).ready(function () {
+            // Delete item
+            var item_to_delete;
 
-        	$('.deleteItem').click((e) => {
-            	item_to_delete = e.currentTarget.dataset.id;
-        	});
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
 
-        	$("#btnYesDelete").click(function () {
-            	window.location.href = '/Owners/DeletePet/' + item_to_delete;
-        	});
-    	});
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Owners/DeletePet/' + item_to_delete;
+            });
+        });
     </script>
 }

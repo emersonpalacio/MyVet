@@ -46,11 +46,7 @@ namespace MyVet.Web.Helper
             }
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
-        {
-            return await _userManager.FindByEmailAsync(email);
-        }
-
+ 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);
@@ -72,6 +68,8 @@ namespace MyVet.Web.Helper
         }
 
 
+
+        //se borrara un usuarios.
         public async Task<bool> DeleteUserAsync(string email)
         {
             var user = await GetUserByEmailAsync(email);
@@ -83,6 +81,12 @@ namespace MyVet.Web.Helper
             var response = await _userManager.DeleteAsync(user);
             return response.Succeeded;
         }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
 
 
         public async Task<IdentityResult> UpdateUserAsync(User user)
@@ -98,8 +102,6 @@ namespace MyVet.Web.Helper
                 password,
                 false);
         }
-
-
 
     }
 }

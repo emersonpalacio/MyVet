@@ -10,7 +10,7 @@ namespace MyVet.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Name*")]
+        [Display(Name = "Name")]
         [MaxLength(50, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string Name { get; set; }
@@ -25,17 +25,19 @@ namespace MyVet.Web.Data.Entities
 
         public PetType PetType { get; set; }
 
-        [Display(Name = "Born*")]
+        [Display(Name = "Born")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]        
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime Born { get; set; }
 
-        [DataType(DataType.DateTime)]
+        [Display(Name = "Born")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime BornLoca => Born.ToLocalTime();
 
         public string Remarks { get; set; }
+        
 
+        //relaciones entre tablas
         public ICollection<History> Histories { get; set; }
 
         public ICollection<Agenda> Agendas { get; set; }
@@ -43,7 +45,7 @@ namespace MyVet.Web.Data.Entities
         //TODO: replace the correct URL for the image
         public string ImageFullPath => string.IsNullOrEmpty(ImageUrl)
             ? null
-            : $"https://TDB.azurewebsites.net{ImageUrl.Substring(1)}";
+            : $"https://TBD.azurewebsites.net{ImageUrl.Substring(1)}";
 
     }
 }

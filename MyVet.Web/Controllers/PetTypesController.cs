@@ -140,9 +140,7 @@ namespace MyVet.Web.Controllers
             _context.PetTypes.Remove(petType);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-       
+        }       
 
         private bool PetTypeExists(int id)
         {

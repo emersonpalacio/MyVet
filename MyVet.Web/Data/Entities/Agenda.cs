@@ -10,13 +10,13 @@ namespace MyVet.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Date*")]
+        [Display(Name = "Date")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd H:mm tt}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
-        [Display(Name = "Date*")]
+        [Display(Name = "Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd H:mm tt}")]
         public DateTime DateLocal => Date.ToLocalTime();
 

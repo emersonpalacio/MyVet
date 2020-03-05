@@ -16,7 +16,7 @@ namespace MyVet.Web.Helper
             _dataContext = dataContext;
             _combosHelper = combosHelper;
         }
-        public async Task<Pet> ToPetAsync(PetViewModel model, string path, bool isNew)
+        public async Task<Pet> ToPetAsync(PetViewModel model, string route, bool isNew)
         {
             var pet= new Pet
             {
@@ -24,7 +24,7 @@ namespace MyVet.Web.Helper
                 Born = model.Born,
                 Histories = model.Histories,  
                 Id= isNew ? 0 : model.Id ,
-                ImageUrl = path,
+                ImageUrl = route ,
                 Name = model.Name,
                 Owner = await _dataContext.Owners.FindAsync(model.OwnerId),
                 PetType = await _dataContext.PetTypes.FindAsync(model.PetTypeId),

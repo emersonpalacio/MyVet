@@ -48,6 +48,7 @@ namespace MyVet.Web.Controllers
                 }
                 ModelState.AddModelError(string.Empty, "Failed to login.");
                 model.Password = string.Empty;
+                model.Username = string.Empty;
             }
             return View(model);
         }

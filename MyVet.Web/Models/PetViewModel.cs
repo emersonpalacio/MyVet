@@ -11,7 +11,7 @@ namespace MyVet.Web.Models
         public int OwnerId { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Display(Name = "Pet Type*")]
+        [Display(Name = "Pet Type")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a pet type.")]
         public int PetTypeId { get; set; }
 

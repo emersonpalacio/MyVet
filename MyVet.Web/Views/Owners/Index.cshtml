@@ -16,11 +16,9 @@
                 @Html.DisplayNameFor(model => model.User.Document)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.FirstName)
+                @Html.DisplayNameFor(model => model.User.FullName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User.LastName)
-            </th>
+        
             <th>
                 @Html.DisplayNameFor(model => model.User.Email)
             </th>
@@ -32,7 +30,7 @@
             </th>
 
             <th>
-                # Pets
+                <strong>  # Pets</strong>
             </th>
 
         </tr>
@@ -45,11 +43,9 @@
                     @Html.DisplayFor(ModelItem => item.User.Document)
                 </td>
                 <td>
-                    @Html.DisplayFor(ModelItem => item.User.FirstName)
+                    @Html.DisplayFor(ModelItem => item.User.FullName)
                 </td>
-                <td>
-                    @Html.DisplayFor(ModelItem => item.User.LastName)
-                </td>
+               
                 <td>
                     @Html.DisplayFor(ModelItem => item.User.Email)
                 </td>
@@ -88,7 +84,7 @@
         	});
 
         	$("#btnYesDelete").click(function () {
-            	window.location.href = '/Owners/Delete/' + item_to_delete;
+            	window.location.href = '/Owners/DeleteOwner/' + item_to_delete;
         	});
     	});
     </script>
