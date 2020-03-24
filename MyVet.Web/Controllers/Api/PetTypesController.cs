@@ -29,6 +29,5 @@ namespace MyVet.Web.Controllers.Api
         {
             return _context.PetTypes;
         }
-
     }
 }

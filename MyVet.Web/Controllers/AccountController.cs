@@ -60,7 +60,7 @@ namespace MyVet.Web.Controllers
         }
 
 
-
+        //creacion de token
         [HttpPost]
         public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
         {
@@ -69,9 +69,8 @@ namespace MyVet.Web.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
                 if (user != null)
                 {
-                    var result = await _userHelper.ValidatePasswordAsync(
-                                                                        user,
-                                                                        model.Password);
+                    var result = await _userHelper.ValidatePasswordAsync( user,
+                                                                          model.Password);
 
                     if (result.Succeeded)
                     {
@@ -87,7 +86,7 @@ namespace MyVet.Web.Controllers
                             _configuration["Tokens:Issuer"],
                             _configuration["Tokens:Audience"],
                             claims,
-                            expires: DateTime.UtcNow.AddMonths(4),
+                            expires: DateTime.UtcNow.AddMonths(13),
                             signingCredentials: credentials);
                         var results = new
                         {

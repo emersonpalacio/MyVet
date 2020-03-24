@@ -94,13 +94,13 @@ namespace MyVet.Web.Helper
             return await _userManager.UpdateAsync(user);
         }
 
-
+        //validacion de tokens
         public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
         {
             return await _signInManager.CheckPasswordSignInAsync(
                 user,
                 password,
-                false);
+                false);//si lo bloqueo por numero de intentos
         }
 
     }

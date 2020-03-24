@@ -28,6 +28,7 @@ namespace MyVet.Web.Helper
 
         Task<IdentityResult> UpdateUserAsync(User user);
 
+        //validiacion de tokens
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
 
 

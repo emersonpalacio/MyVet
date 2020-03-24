@@ -4,14 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyVet.Common.Models;
 using MyVet.Web.Data;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyVet.Web.Controllers.Api
 {
-    
 
     [Route("api/[controller]")]
     [ApiController]
@@ -24,6 +21,7 @@ namespace MyVet.Web.Controllers.Api
         {
             _dataContext = dataContext;
         }
+
 
         [HttpPost]
         [Route("GetOwnerByEmail")]
@@ -51,6 +49,7 @@ namespace MyVet.Web.Controllers.Api
                 Document = owner.User.Document,
                 Email = owner.User.Email,
                 PhoneNumber = owner.User.PhoneNumber,
+
                 Pets = owner.Pets.Select(p => new PetResponse
                 {
                     Born = p.Born,
@@ -60,6 +59,7 @@ namespace MyVet.Web.Controllers.Api
                     Race = p.Race,
                     Remarks = p.Remarks,
                     PetType = p.PetType.Name,
+
                     Histories = p.Histories.Select(h => new HistoryResponse
                     {
                         Date = h.Date,
@@ -73,7 +73,5 @@ namespace MyVet.Web.Controllers.Api
 
             return Ok(response);
         }
-
-
     }
 }
