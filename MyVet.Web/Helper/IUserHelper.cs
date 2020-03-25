@@ -33,6 +33,21 @@ namespace MyVet.Web.Helper
 
         //chage the password
         Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
+        
+        // confirmacion de email 
+        Task<string> GenerateEmailConfirmationTokenAsync(User user);
+
+        Task<IdentityResult> ConfirmEmailAsync(User user, string token);
+
+        Task<User> GetUserByIdAsync(string userId);
+
+        //recover password
+        Task<string> GeneratePasswordResetTokenAsync(User user);
+
+        Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
+
+
+
 
     }
 }

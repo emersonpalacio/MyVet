@@ -25,18 +25,21 @@ namespace MyVet.Web.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IMailHelper _mailHelper;
 
         public OwnersController(DataContext context,
                                 IUserHelper userHelper,
                                 ICombosHelper combosHelper,
                                 IConverterHelper converterHelper,
-                                IImageHelper imageHelper)
+                                IImageHelper imageHelper,
+                                IMailHelper mailHelper)
         {
             _context = context;
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _converterHelper = converterHelper;
             _imageHelper = imageHelper;
+            _mailHelper = mailHelper;
         }
 
         // GET: Owners
@@ -92,6 +95,7 @@ namespace MyVet.Web.Controllers
                     return View(model);
                 }
                 var UserInDb = await _userHelper.GetUserByEmailAsync(model.Username);
+
                 var owner = new Owner
                 {
                     Agendas = new List<Agenda>(),
@@ -100,6 +104,20 @@ namespace MyVet.Web.Controllers
                 };
                 _context.Owners.Add(owner);
                 await _context.SaveChangesAsync();
+
+                var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                var tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    $"To allow the user, " +
+                    $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
