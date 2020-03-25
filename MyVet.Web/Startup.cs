@@ -48,13 +48,17 @@ namespace MyVet.Web
 
             services.AddIdentity<User, IdentityRole>(cfg =>
             {
+                cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                cfg.SignIn.RequireConfirmedEmail = true;
                 cfg.User.RequireUniqueEmail = true;
                 cfg.Password.RequireDigit = false;
                 cfg.Password.RequiredUniqueChars = 0;
                 cfg.Password.RequireLowercase = false;
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<DataContext>();
+            })  
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<DataContext>();
 
 
             services.AddAuthentication()

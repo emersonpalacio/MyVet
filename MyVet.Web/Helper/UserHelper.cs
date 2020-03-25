@@ -103,5 +103,11 @@ namespace MyVet.Web.Helper
                 false);//si lo bloqueo por numero de intentos
         }
 
+
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+
     }
 }

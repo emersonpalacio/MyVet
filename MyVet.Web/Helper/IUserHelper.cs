@@ -31,6 +31,8 @@ namespace MyVet.Web.Helper
         //validiacion de tokens
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
 
+        //chage the password
+        Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
 
     }
 }
